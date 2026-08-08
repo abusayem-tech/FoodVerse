@@ -11,6 +11,10 @@ router.post('/signup', async (req, res) => {
   try {
     const { firstName, lastName, phone, email, password, role } = req.body;
 
+    if (!firstName || !lastName || !phone || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required!' });
+    }
+
     // ইমেইল বা ফোন নম্বর দিয়ে চেক করা (আগে থেকে আছে কি না)
     const existingUser = await User.findOne({ 
       $or: [{ email }, { phone }] 
@@ -90,8 +94,25 @@ router.post('/login', async (req, res) => {
 // ৩. প্রোফাইল আপডেট এপিআই (PROFILE UPDATE ROUTE)
 router.put('/update-profile', async (req, res) => {
   const { userId, firstName, lastName, phone } = req.body;
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
   try {
+    if (!token) {
+      return res.status(401).json({ message: 'Authentication required!' });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch {
+      return res.status(401).json({ message: 'Invalid or expired token!' });
+    }
+
+    if (String(decoded.id) !== String(userId)) {
+      return res.status(403).json({ message: 'You can only update your own profile!' });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { firstName, lastName, phone },

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { foodItems } from '../data/foodItems';
 
-const Home = ({ darkMode }) => {
+const Home = ({ darkMode, showToast }) => {
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -41,7 +41,18 @@ const Home = ({ darkMode }) => {
   }, []);
 
   const addToCart = (food) => {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (!localStorage.getItem('user')) {
+      if (showToast) showToast('কার্টে খাবার যোগ করতে আগে লগইন করুন!');
+      setTimeout(() => navigate('/login'), 1200);
+      return;
+    }
+
+    let cart = [];
+    try {
+      cart = JSON.parse(localStorage.getItem('cart')) || [];
+    } catch {
+      cart = [];
+    }
     const existingIndex = cart.findIndex(item => item.id === food.id);
 
     if (existingIndex > -1) {
@@ -52,6 +63,7 @@ const Home = ({ darkMode }) => {
 
     localStorage.setItem('cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('cartUpdated'));
+    if (showToast) showToast(`${food.name} added to cart!`);
   };
 
   const getGreeting = () => {
@@ -70,26 +82,26 @@ const Home = ({ darkMode }) => {
   const greeting = getGreeting();
 
   const restaurants = [
-    { id: 1, name: 'Sultan’s Dine', tags: 'Kacchi Biryani, Morog Polao, Chicken Roast', rating: '4.9', time: '20-30 min', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500' },
-    { id: 2, name: 'Kacchi Bhai', tags: 'Kacchi Biryani, Morog Polao, Roast', rating: '4.8', time: '30-45 min', img: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500' },
-    { id: 3, name: 'Chillox', tags: 'Burgers, Fast Food, French Fries', rating: '4.7', time: '20-30 min', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
-    { id: 4, name: 'PizzaBurg', tags: 'Pizza, Fast Food, Pasta', rating: '4.6', time: '25-35 min', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500' },
-    { id: 5, name: 'Takeout', tags: 'Beef Burger, Wings, Fast Food', rating: '4.5', time: '20-30 min', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500' },
-    { id: 6, name: 'Madchef', tags: 'Specialty Burgers, Nachos, Fast Food', rating: '4.8', time: '30-40 min', img: 'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=500' },
-    { id: 7, name: 'Star Kabab & Restaurant', tags: 'Bengali Meals, Tehari, Boti Kabab, Naan', rating: '4.4', time: '25-35 min', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500' },
-    { id: 8, name: 'Handi', tags: 'Biryani, Mughlai, Curries', rating: '4.5', time: '30-45 min', img: 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500' },
-    { id: 9, name: 'Al Razzaq', tags: 'Tehari, Khichuri, Beef Bhuna', rating: '4.3', time: '20-30 min', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500' },
-    { id: 10, name: 'Puran Dhaka Haji Biryani', tags: 'Traditional Mutton Biryani, Borhani', rating: '4.7', time: '25-35 min', img: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=500' },
-    { id: 11, name: 'Fakhruddin Puran Dhaka Biryani', tags: 'Kacchi, Borhani, Jali Kebab', rating: '4.8', time: '30-40 min', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=500' },
-    { id: 12, name: 'Herfy', tags: 'Burgers, Fried Chicken, Value Meals', rating: '4.3', time: '25-35 min', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
-    { id: 13, name: 'KFC', tags: 'Fried Chicken, Zinger Burger, Nuggets', rating: '4.6', time: '20-30 min', img: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500' },
-    { id: 14, name: 'Pizza Hut', tags: 'Pan Pizza, Garlic Bread, Pasta', rating: '4.5', time: '30-45 min', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500' },
-    { id: 15, name: 'BFC (Bangladesh Fried Chicken)', tags: 'Fried Chicken, Rice Meals, Burgers', rating: '4.2', time: '25-35 min', img: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=500' },
-    { id: 16, name: 'Burger King', tags: 'Whopper, Burgers, Onion Rings', rating: '4.7', time: '25-35 min', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
-    { id: 17, name: 'Subway', tags: 'Submarines, Healthy Wraps, Cookies', rating: '4.5', time: '20-30 min', img: 'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=500' },
-    { id: 18, name: "Domino's Pizza", tags: 'Pizza, Chicken Wings, Desserts', rating: '4.6', time: '25-35 min', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500' },
-    { id: 19, name: 'Hazi Nanna Biryani', tags: 'Kacchi Biryani, Beef Biryani, Borhani', rating: '4.7', time: '30-40 min', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500' },
-    { id: 20, name: 'Roohani-Gulshan', tags: 'Kacchi Biryani, Chicken Biryani, Beef Biryani', rating: '4.6', time: '25-35 min', img: 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500' }
+    { id: 1, name: "Sultan's Dine", tags: 'Biryani & Kacchi, Bengali Meals', rating: '4.9', time: '30-40 min', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500' },
+    { id: 2, name: 'Kacchi Bhai', tags: 'Biryani & Kacchi', rating: '4.8', time: '30-45 min', img: 'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=500' },
+    { id: 3, name: 'Hazi Nanna Biryani', tags: 'Biryani & Kacchi', rating: '4.6', time: '25-35 min', img: 'https://images.unsplash.com/photo-1624823297534-114d64239dbd?w=500' },
+    { id: 4, name: 'Roohani', tags: 'Biryani & Kacchi, Bengali Meals', rating: '4.7', time: '30-40 min', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500' },
+    { id: 5, name: 'Star Kabab & Restaurant', tags: 'Bengali Meals, Kebab & BBQ', rating: '4.5', time: '25-35 min', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500' },
+    { id: 6, name: 'PizzaBurg', tags: 'Burgers, Pizza, Pasta, Fried Chicken', rating: '4.7', time: '25-35 min', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500' },
+    { id: 7, name: 'Chillox', tags: 'Burgers, Fried Chicken', rating: '4.8', time: '20-30 min', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
+    { id: 8, name: 'Madchef', tags: 'Burgers, Steak, Kebab & BBQ', rating: '4.7', time: '25-35 min', img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=500' },
+    { id: 9, name: 'Takeout', tags: 'Burgers, Fried Chicken, Steak, Shawarma', rating: '4.5', time: '20-30 min', img: 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=500' },
+    { id: 10, name: 'BFC', tags: 'Fried Chicken, Burgers, Shawarma & Wraps', rating: '4.4', time: '20-30 min', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?w=500' },
+    { id: 11, name: "Khana's", tags: 'Burgers, Shawarma & Wraps', rating: '4.3', time: '25-35 min', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500' },
+    { id: 12, name: 'Spaghetti Jazz', tags: 'Pizza, Pasta, Steak', rating: '4.6', time: '30-40 min', img: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500' },
+    { id: 13, name: 'Prego', tags: 'Pizza, Pasta, Steak, Seafood', rating: '4.9', time: '40-50 min', img: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?w=500' },
+    { id: 14, name: 'Grand Prince Thai & Chinese', tags: 'Chinese, Thai, Seafood', rating: '4.4', time: '30-40 min', img: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500' },
+    { id: 15, name: 'Hongbao', tags: 'Chinese, Seafood', rating: '4.8', time: '35-45 min', img: 'https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?w=500' },
+    { id: 16, name: 'Koreana Restaurant', tags: 'Korean, Seafood', rating: '4.7', time: '35-45 min', img: 'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=500' },
+    { id: 17, name: "Cooper's Bakery", tags: 'Bakery & Desserts, Coffee & Beverages', rating: '4.7', time: '15-25 min', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
+    { id: 18, name: 'Secret Recipe', tags: 'Pasta, Bakery & Desserts, Coffee & Beverages', rating: '4.8', time: '20-30 min', img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
+    { id: 19, name: 'North End Coffee Roasters', tags: 'Coffee & Beverages', rating: '4.9', time: '20-30 min', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500' },
+    { id: 20, name: "Gloria Jean's Coffees", tags: 'Coffee & Beverages', rating: '4.7', time: '20-30 min', img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=500' }
   ];
 
   const handleInputChange = (e) => {
@@ -162,9 +174,9 @@ const Home = ({ darkMode }) => {
   ];
 
   const foods = [
-    { id: 1, name: 'Basmati Kacchi', restaurant: 'Kacchi Bhai', price: '৳330', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500' },
-    { id: 2, name: 'Smoky BBQ Cheese Beef', restaurant: 'Chillox', price: '৳295', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
-    { id: 3, name: 'Royal Silk', restaurant: 'PizzaBurg', price: '৳349', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500' }
+    { id: 9001, name: 'Basmati Kacchi', restaurant: 'Kacchi Bhai', price: '৳330', img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500' },
+    { id: 9002, name: 'Smoky BBQ Cheese Beef', restaurant: 'Chillox', price: '৳295', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500' },
+    { id: 9003, name: 'Royal Silk', restaurant: 'PizzaBurg', price: '৳349', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500' }
   ];
 
   return (
@@ -359,7 +371,12 @@ const Home = ({ darkMode }) => {
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: '700', color: textColor, margin: 0 }}>Recommended for You</h3>
-            <span style={{ color: '#FF5A36', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>View All →</span>
+            <span
+              onClick={() => navigate('/restaurants')}
+              style={{ color: '#FF5A36', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}
+            >
+              View All →
+            </span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>

@@ -17,7 +17,11 @@ import FoodVerseAI from './components/FoodVerseAI'; // ✅ FoodVerse AI Import
 function App() {
   const [toastMessage, setToastMessage] = useState('');
   const [darkMode, setDarkMode] = useState(() => {
-    return JSON.parse(localStorage.getItem('darkMode')) || false;
+    try {
+      return JSON.parse(localStorage.getItem('darkMode')) || false;
+    } catch {
+      return false;
+    }
   });
 
   useEffect(() => {
@@ -50,10 +54,10 @@ function App() {
       <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       
       <Routes>
-        <Route path="/" element={<Home darkMode={darkMode} />} />
+        <Route path="/" element={<Home darkMode={darkMode} showToast={showToast} />} />
         <Route path="/signup" element={<Signup darkMode={darkMode} />} />
         <Route path="/login" element={<Login darkMode={darkMode} />} />
-        <Route path="/profile" element={<Profile darkMode={darkMode} />} />
+        <Route path="/profile" element={<Profile darkMode={darkMode} showToast={showToast} />} />
         
         <Route 
           path="/checkout" 
@@ -77,7 +81,7 @@ function App() {
       {toastMessage && !isOrderSuccess && (
         <div style={{
             position: 'fixed',
-            bottom: '30px',
+            bottom: '95px',
             right: '30px',
             backgroundColor: darkMode ? '#1E293B' : '#111827',
             color: '#FFFFFF',
@@ -86,11 +90,12 @@ function App() {
             boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
             fontSize: '14px',
             fontWeight: '600',
-            zIndex: 999999,
+            zIndex: 10000,
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            borderLeft: '4px solid #FF6B1A'
+            borderLeft: '4px solid #FF6B1A',
+            maxWidth: 'min(360px, calc(100vw - 60px))'
         }}>
           <span>✨</span> {toastMessage}
         </div>

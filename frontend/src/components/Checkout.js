@@ -10,7 +10,12 @@ const Checkout = ({ darkMode, showToast }) => {
   const deliveryCharge = 60; 
 
   const loadCart = () => {
-    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    let savedCart = [];
+    try {
+      savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    } catch {
+      savedCart = [];
+    }
     setCart(savedCart);
 
     const savedLocation = localStorage.getItem('userLocation');
@@ -62,13 +67,25 @@ const Checkout = ({ darkMode, showToast }) => {
       return;
     }
 
-    // App.js-এর গ্লোবাল সেন্টার্ড পপ-আপ ট্রিগার হবে
+    const orderId = `FV-${Date.now().toString().slice(-8)}`;
+    const order = {
+      orderId,
+      paymentMethod,
+      deliveryAddress: deliveryAddress || 'Dhaka, Bangladesh',
+      items: cart,
+      total: grandTotal,
+      createdAt: new Date().toISOString(),
+      status: 'On The Way'
+    };
+    localStorage.setItem('lastOrder', JSON.stringify(order));
+
     if (showToast) {
       showToast(`Order Placed Successfully using ${paymentMethod.toUpperCase()}!`);
     }
     
     localStorage.removeItem('cart');
     window.dispatchEvent(new Event('cartUpdated'));
+    setTimeout(() => navigate(`/track-order?orderId=${orderId}`), 1800);
   };
 
   const paymentOptions = [

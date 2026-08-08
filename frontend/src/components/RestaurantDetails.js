@@ -2,9 +2,34 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { foodItems } from '../data/foodItems';
 
+const restaurantNames = {
+  1: "Sultan's Dine",
+  2: 'Kacchi Bhai',
+  3: 'Hazi Nanna Biryani',
+  4: 'Roohani',
+  5: 'Star Kabab & Restaurant',
+  6: 'PizzaBurg',
+  7: 'Chillox',
+  8: 'Madchef',
+  9: 'Takeout',
+  10: 'BFC',
+  11: "Khana's",
+  12: 'Spaghetti Jazz',
+  13: 'Prego',
+  14: 'Grand Prince Thai & Chinese',
+  15: 'Hongbao',
+  16: 'Koreana Restaurant',
+  17: "Cooper's Bakery",
+  18: 'Secret Recipe',
+  19: 'North End Coffee Roasters',
+  20: "Gloria Jean's Coffees"
+};
+
 const RestaurantDetails = ({ darkMode, showToast }) => {
   const { id } = useParams();
-  const currentMenu = foodItems[Number(id)] || [];
+  const restaurantId = Number(id);
+  const currentMenu = foodItems[restaurantId] || [];
+  const restaurantName = restaurantNames[restaurantId] || 'Restaurant';
 
   const handleAddToCart = (item) => {
     const storedUser = localStorage.getItem('user');
@@ -14,7 +39,12 @@ const RestaurantDetails = ({ darkMode, showToast }) => {
       return;
     }
 
-    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    let savedCart = [];
+    try {
+      savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    } catch {
+      savedCart = [];
+    }
     const existingIndex = savedCart.findIndex((cartItem) => cartItem.id === item.id);
 
     if (existingIndex > -1) {
@@ -48,9 +78,10 @@ const RestaurantDetails = ({ darkMode, showToast }) => {
         ← Back to Restaurants
       </Link>
 
-      <h2 style={{ fontSize: '26px', fontWeight: '800', color: textColor, marginBottom: '24px' }}>
-        🍽️ Menu Items
+      <h2 style={{ fontSize: '26px', fontWeight: '800', color: textColor, marginBottom: '8px' }}>
+        🍽️ {restaurantName}
       </h2>
+      <p style={{ color: '#6B7280', marginBottom: '24px' }}>Menu Items</p>
 
       {currentMenu.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '24px' }}>

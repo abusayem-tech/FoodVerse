@@ -60,9 +60,12 @@ const seedData = async () => {
         await User.deleteMany({ email: "test@gmail.com" });
         const hashedPassword = await bcrypt.hash('123456', 10);
         await User.create({
-            name: "Test User",
+            firstName: "Test",
+            lastName: "User",
+            phone: "01700000000",
             email: "test@gmail.com",
-            password: hashedPassword
+            password: hashedPassword,
+            role: "customer"
         });
         console.log("Test User Created Successfully!");
 

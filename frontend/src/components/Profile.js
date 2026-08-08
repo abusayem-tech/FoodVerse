@@ -88,17 +88,18 @@ const Profile = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/update-profile', {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5001/api/auth/update-profile', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
           userId: user._id || user.id,
           firstName: formData.firstName,
           lastName: formData.lastName,
-          phone: formData.phone,
-          profilePic: formData.profilePic
+          phone: formData.phone
         })
       });
 

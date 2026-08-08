@@ -19,7 +19,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('http://localhost:5001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -100,9 +100,13 @@ const Login = () => {
           </div>
 
           <div style={{ textAlign: 'right', marginBottom: '15px' }}>
-            <Link to="/forgot-password" style={{ fontSize: '13px', color: '#e55322', textDecoration: 'none', fontWeight: '500' }}>
+            <button
+              type="button"
+              onClick={() => setError('Password reset is not available yet. Please contact support.')}
+              style={{ fontSize: '13px', color: '#e55322', textDecoration: 'none', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            >
               Forgot Password?
-            </Link>
+            </button>
           </div>
 
           <button type="submit" className="auth-btn">

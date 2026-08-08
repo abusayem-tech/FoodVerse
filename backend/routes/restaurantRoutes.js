@@ -12,7 +12,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-module.exports = router;
 // Get single restaurant by ID
 router.get('/:id', async (req, res) => {
     try {
@@ -20,6 +19,11 @@ router.get('/:id', async (req, res) => {
         if (!restaurant) return res.status(404).json({ message: 'Restaurant not found' });
         res.json(restaurant);
     } catch (err) {
+        if (err.name === 'CastError') {
+            return res.status(404).json({ message: 'Restaurant not found' });
+        }
         res.status(500).json({ message: err.message });
     }
 });
+
+module.exports = router;

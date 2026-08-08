@@ -9,7 +9,7 @@ const MenuPage = () => {
     const { cart, addToCart, removeFromCart, getTotalPrice } = useCart();
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/restaurants/${id}`)
+        axios.get(`http://localhost:5001/api/restaurants/${id}`)
             .then(res => setRestaurant(res.data))
             .catch(err => console.error(err));
     }, [id]);

@@ -23,8 +23,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const location = useLocation();
 
   const loadCart = () => {
-    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-    setCart(savedCart);
+    try {
+      setCart(JSON.parse(localStorage.getItem('cart')) || []);
+    } catch {
+      setCart([]);
+    }
   };
 
   const loadUser = () => {
@@ -191,9 +194,9 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           src={darkMode ? logoDark : logoLight} 
           alt="FoodVerse Logo" 
           style={{ 
-            height: '200px', 
+            height: '48px', 
             width: 'auto', 
-            maxHeight: '200px', 
+            maxHeight: '48px', 
             objectFit: 'contain', 
             display: 'block' 
           }} 
@@ -348,10 +351,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 border: `1px solid ${borderStyle}`
               }}>
                 <Link to="/profile" onClick={() => setIsDropdownOpen(false)} style={{ ...menuItemStyle, color: textStyle }}>👤 My Profile</Link>
-                <Link to="/orders" onClick={() => setIsDropdownOpen(false)} style={{ ...menuItemStyle, color: textStyle }}>📄 My Orders</Link>
-                <div style={{ ...menuItemStyle, color: textStyle }}>❤️ Favorites</div>
-                <div style={{ ...menuItemStyle, color: textStyle }}>📍 Saved Addresses</div>
-                <div style={{ ...menuItemStyle, color: textStyle }}>⚙️ Settings</div>
+                <Link to="/track-order" onClick={() => setIsDropdownOpen(false)} style={{ ...menuItemStyle, color: textStyle }}>📄 My Orders</Link>
                 <div style={{ borderTop: `1px solid ${borderStyle}`, margin: '6px 0' }}></div>
                 <button onClick={handleLogout} style={{ ...menuItemStyle, color: '#FF6B1A', border: 'none', background: 'none', width: '100%', textAlign: 'left', fontWeight: 'bold' }}>
                   🚪 Logout
