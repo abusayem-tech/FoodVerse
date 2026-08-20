@@ -6,7 +6,7 @@ Demo users and restaurants are **hardcoded** in the backend (no `.env` / MongoDB
 
 ## Live demo
 
-https://foodverse-roza.vercel.app
+https://foodverse-66c.vercel.app
 
 ## Demo accounts
 
