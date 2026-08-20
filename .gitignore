@@ -49,3 +49,5 @@ frontend/android/captures/
 *.tgz
 .turbo/
 .parcel-cache/
+.vercel
+.env*

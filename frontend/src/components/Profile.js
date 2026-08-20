@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiUrl } from '../api';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -89,7 +90,7 @@ const Profile = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/auth/update-profile', {
+      const response = await fetch(apiUrl('/api/auth/update-profile'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -232,7 +233,10 @@ const Profile = () => {
           </div>
 
           <div style={infoBoxStyle}>
-            <strong>Account Role:</strong> <span style={{ textTransform: 'capitalize', color: '#FF6B1A', fontWeight: 'bold' }}>{user.role || 'Customer'}</span>
+            <strong>Account Role:</strong>{' '}
+            <span style={{ textTransform: 'capitalize', color: '#FF6B1A', fontWeight: 'bold' }}>
+              {(user.role || 'customer').replace(/_/g, ' ')}
+            </span>
           </div>
         </div>
       )}

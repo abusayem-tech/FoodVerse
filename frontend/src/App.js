@@ -12,7 +12,7 @@ import Offers from './components/Offers';
 import TrackOrder from './components/TrackOrder';
 import CategoryProducts from './components/CategoryProducts';
 import RestaurantDetails from './components/RestaurantDetails';
-import FoodVerseAI from './components/FoodVerseAI'; // ✅ FoodVerse AI Import
+import FoodVerseAI from './components/FoodVerseAI';
 
 function App() {
   const [toastMessage, setToastMessage] = useState('');
